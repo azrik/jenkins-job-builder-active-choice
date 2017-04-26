@@ -8,19 +8,21 @@ Jenkins Job Builder plugin for Active Choice Parameter
 
 Enables support for `Active Choice Plugin`_ plugin in `Jenkins Job Builder`_.
 
+Supports simple Choice and Cascaded Choice.
+
 Example:
 
 .. code-block:: yaml
 
     - job:
-        name: 'cascade-choice-example'
+        name: 'uno-cascade-choice-example'
 
         parameters:
           - string:
               name: STR_PARAM
               default: test
-          - active-choice:
-              project: 'cascade-choice-example'
+          - uno-cascade-choice:
+              project: 'uno-cascade-choice-example'
               name: CASCADE_CHOICE
               script: |
                 return ['foo:selected', 'bar']
@@ -29,6 +31,27 @@ Example:
               fallback-script: |
                 return ['Something Wrong']
               reference: STR_PARAM
+              choice-type: single
+
+
+.. code-block:: yaml
+
+    - job:
+        name: 'uno-choice-example'
+
+        parameters:
+          - string:
+              name: STR_PARAM
+              default: test
+          - uno-choice:
+              project: 'uno-choice-example'
+              name: CASCADE_CHOICE
+              script: |
+                return ['foo:selected', 'bar']
+              description: "A parameter named CASCADE_CHOICE which options foo and bar."
+              visible-item-count: 1
+              fallback-script: |
+                return ['Something Wrong']
               choice-type: single
 
 

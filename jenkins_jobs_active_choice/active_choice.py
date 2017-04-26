@@ -56,9 +56,33 @@ def _unique_string(project, name):
     return 'choice-param-{0}-{1}'.format(project, name).lower()
 
 
-def cascade_choice_parameter(parser, xml_parent, data):
-    """yaml: cascade-choice
+def uno_choice_parameter(parser, xml_parent, data):
+    """yaml: uno-choice
     Creates an active choice parameter
+    Requires the Jenkins :jenkins-wiki:`Active Choices Plugin <Active+Choices+Plugin>`.
+
+    :arg str name: the name of the parameter
+    :arg str script: the groovy script which generates choices
+    :arg str description: a description of the parameter (optional)
+    arg: int visible-item-count: a number of visible items
+    arg: str fallback-script: a groovy script which will be evaluated if main script fails (optional)
+    arg: str choice-type: a choice type, can be on of single, multi, checkbox or radio
+    arg: bool filterable: added text box to filter elements
+    Example::
+
+    .. code-block:: yaml
+
+        - uno-choice:
+          name: CASCADE_CHOICE
+          project: test_project
+          script: |
+            return ['foo', 'bar']
+    """
+    active_choice_parameter('uno-choice', parser, xml_parent, data)
+
+def uno_cascade_choice_parameter(parser, xml_parent, data):
+    """yaml: uno-cascade-choice
+    Creates an active cascade choice parameter
     Requires the Jenkins :jenkins-wiki:`Active Choices Plugin <Active+Choices+Plugin>`.
 
     :arg str name: the name of the parameter
@@ -73,18 +97,26 @@ def cascade_choice_parameter(parser, xml_parent, data):
 
     .. code-block:: yaml
 
-        - cascade-choice:
+        - uno-cascade-choice:
           name: CASCADE_CHOICE
           project: test_project
           script: |
             return ['foo', 'bar']
     """
+    active_choice_parameter('uno-cascade-choice', parser, xml_parent, data)
 
-    element_name = 'org.biouno.unochoice.CascadeChoiceParameter'
+def active_choice_parameter(unotype, parser, xml_parent, data):
+
+    if unotype == 'uno-choice':
+      element_name = 'org.biouno.unochoice.ChoiceParameter'
+    else:
+      element_name = 'org.biouno.unochoice.CascadeChoiceParameter'
 
     section = Xml.SubElement(xml_parent, element_name)
     scripts = Xml.SubElement(section, 'script', {'class': 'org.biouno.unochoice.model.GroovyScript'})
-    Xml.SubElement(section, 'parameters', {'class': 'linked-hash-map'})
+
+    if unotype == 'uno-cascade-choice':
+      Xml.SubElement(section, 'parameters', {'class': 'linked-hash-map'})
 
     for name, tag in REQUIRED:
         try:
@@ -93,7 +125,8 @@ def cascade_choice_parameter(parser, xml_parent, data):
             raise Exception("missing mandatory argument %s" % name)
 
     for name, tag, default in OPTIONAL:
-        _add_element(section, tag, data.get(name, default))
+        if unotype == 'uno-cascade-choice' or name != 'reference':
+          _add_element(section, tag, data.get(name, default))
 
     try:
         _add_script(scripts, "secureScript", data["script"])

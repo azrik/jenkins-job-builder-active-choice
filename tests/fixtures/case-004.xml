@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <actions/>
+  <description>&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>false</concurrentBuild>
+  <canRoam>true</canRoam>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>STR_PARAM</name>
+          <description/>
+          <defaultValue>test</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <org.biouno.unochoice.ChoiceParameter>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript>
+              <script>return ['foo:selected', 'bar']
+</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript>
+              <script>return ['Something Wrong']
+</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <name>CASCADE_CHOICE</name>
+          <projectName>uno-choice-example-04</projectName>
+          <description>A parameter named CASCADE_CHOICE which options foo and bar.</description>
+          <visibleItemCount>1</visibleItemCount>
+          <filterable>false</filterable>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <randomName>choice-param-uno-choice-example-04-cascade_choice</randomName>
+        </org.biouno.unochoice.ChoiceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <builders/>
+  <publishers/>
+  <buildWrappers/>
+</project>

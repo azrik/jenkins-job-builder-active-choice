@@ -15,9 +15,11 @@ import glob
 import os
 
 from jenkins_jobs import parser
+from jenkins_jobs.config import JJBConfig
+from jenkins_jobs.registry import ModuleRegistry
+from jenkins_jobs.xml_config import XmlJobGenerator
 
 import pytest
-
 
 class Scenario(object):
     def __init__(self, name, test_input, expected):
@@ -36,11 +38,18 @@ def get_scenarios():
 
 
 def generate_xml(fn):
-    yaml_parser = parser.YamlParser()
+    yaml_parser = parser.YamlParser(config)
     yaml_parser.parse(fn)
-    yaml_parser.expandYaml()
-    assert 1 == len(yaml_parser.jobs), "Expected one job"
-    return yaml_parser.getXMLForJob(yaml_parser.jobs[0]).output()
+
+    yaml_registry = ModuleRegistry(config)
+    yaml_registry.set_parser_data(yaml_parser.data)
+    job_data_list, view_data_list = yaml_parser.expandYaml(yaml_registry)
+
+    xml_generator = XmlJobGenerator(yaml_registry)
+    xml_jobs = xml_generator.generateXML(job_data_list)
+    assert 1 == len(xml_jobs), "Expected one job"
+
+    return xml_jobs[0].output()
 
 
 def load_xml(fn):
@@ -48,8 +57,8 @@ def load_xml(fn):
         return stream.read().encode("utf-8")
 
 
+config = JJBConfig()
 scenarios = get_scenarios()
-
 
 @pytest.mark.parametrize("scenario", scenarios, ids=[x.name for x in scenarios])
 def test_scenario(scenario):

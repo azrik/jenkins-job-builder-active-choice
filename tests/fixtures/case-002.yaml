@@ -2,7 +2,7 @@
     name: 'cascade-choice-example-02'
 
     parameters:
-      - cascade-choice:
+      - uno-cascade-choice:
           name: CASCADE_CHOICE
           project: 'cascade-choice-example-02'
           script: |

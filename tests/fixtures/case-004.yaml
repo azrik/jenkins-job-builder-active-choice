@@ -1,18 +1,17 @@
 - job:
-    name: 'cascade-choice-example-03'
+    name: 'uno-choice-example-04'
 
     parameters:
       - string:
           name: STR_PARAM
           default: test
-      - uno-cascade-choice:
+      - uno-choice:
           name: CASCADE_CHOICE
-          project: 'cascade-choice-example-03'
+          project: 'uno-choice-example-04'
           script: |
-            return ['foo', 'bar']
+            return ['foo:selected', 'bar']
           description: "A parameter named CASCADE_CHOICE which options foo and bar."
-          visible-item-count: 2
+          visible-item-count: 1
           fallback-script: |
             return ['Something Wrong']
-          reference: STR_PARAM
-          choice-type: checkbox
+          choice-type: single
